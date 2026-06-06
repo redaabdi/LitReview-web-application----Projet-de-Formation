@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-def home(request):
-    return HttpResponse('<h1>Homepage</h1>')
+def homepage(request):
+    return render(request, 'homepage.html')
 
+def signin(request):
+    return render(request, 'signin.html')
