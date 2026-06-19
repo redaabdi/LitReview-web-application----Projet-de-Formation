@@ -5,73 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LITReview</title>
   <style>
-
-    body {
+  body {
       font-family: 'Georgia', serif;
       background: white;
       color: black;
-    }
+      margin: 0;
+  }
 
-    header {
+  header {
       border-bottom: 1px solid black;
       padding: 1.2rem;
       text-align: center;
-      font-size: 1rem;
-    }
+  }
 
-    section {
+  header a {
+      text-decoration: none;
+      color: black;
+  }
+
+  section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-    }
-
-    .signup {
       padding: 5rem 4rem;
-    }
+  }
 
-    h2 {
+  h2 {
       font-size: 1.6rem;
       font-weight: 400;
       margin-bottom: 2rem;
-    }
+  }
 
-    input {
+  form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  input {
       padding: 0.85rem 1rem;
       font-family: 'Georgia', serif;
-      font-size: 1rem;
       margin-bottom: 1rem;
-    }
+  }
 
-    button {
+  button {
       padding: 0.75rem 1.8rem;
       border: 1px solid #111;
       border-radius: 6px;
       background: transparent;
       font-family: 'Georgia', serif;
-      font-size: 1rem;
       cursor: pointer;
-    }
-
-    .login button {
-      display: block;
-      margin-left: auto;
-    }
-    
+  }
+  </style>
+</head>
+<body>    
   </style>
 </head>
 <body>
 
-  <header>LITReview</header>
+  <header>
+    <a href="{% url 'homepage' %}">LITReview</a>
+  </header>
 
   <main>
 
     <section class="signup">
       <h2>Inscrivez-vous</h2>
-      <input type="text" placeholder="Nom d'utilisateur">
-      <input type="password" placeholder="Mot de passe">
-      <input type="password" placeholder="Confirmez le mot de passe">
-      <button>S'inscrire</button>
+      <form method="POST">
+        {% csrf_token %}
+        <input type="text" placeholder="Nom d'utilisateur" name="username">
+        <input type="password" placeholder="Mot de passe" name="password">
+        <input type="password" placeholder="Confirmez le mot de passe" name="password_confirm">
+        <button type="submit">S'inscrire</button>
+        {% if success %}
+          <p>{{ success }}</p>
+        {% endif %}
+        {% if errors %}
+          {% for error in errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </form>
     </section>
   </main>
 
