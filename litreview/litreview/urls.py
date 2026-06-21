@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path
 from authentication import views as authentication_views
 from feed import views as feed_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('homepage/', authentication_views.homepage, name='homepage'),
     path('register/', authentication_views.register, name='register'),
-    path('feed/', feed_views.feed, name='feed')
-]
+    path('feed/', feed_views.feed, name='feed'),
+    path('ticket_create/', feed_views.ticket_create, name='ticket_create'),
+    path('logout/', authentication_views.logout_view, name='logout')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

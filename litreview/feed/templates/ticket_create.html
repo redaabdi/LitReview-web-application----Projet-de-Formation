@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LITReview - Créer un ticket</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: white;
+            color: black;
+            margin: 0;
+        }
+
+        header {
+            border-bottom: 1px solid black;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        header a.logo {
+            text-decoration: none;
+            color: black;
+        }
+
+        nav {
+            position: absolute;
+            right: 2rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+        }
+
+        main {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        input[type="text"],
+        textarea {
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid black;
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 220px;
+            resize: vertical;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            width: fit-content;
+            margin-bottom: 2rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 0.75rem 2.2rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .errors p {
+            color: #b00020;
+            margin: 0 0 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'homepage' %}" class="logo">LITReview</a>
+    <nav>
+        <a href="{% url 'feed' %}">Flux</a>
+        <a href="">Posts</a>
+        <a href="">Abonnements</a>
+        <a href="{% url 'logout' %}">Se déconnecter</a>
+    </nav>
+</header>
+
+<main>
+    <h2>Créer un ticket</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="title">Titre</label>
+        <input type="text" id="title" name="title">
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label>Image</label>
+        <label class="file-label" for="image">Télécharger fichier</label>
+        <input type="file" id="image" name="image">
+
+        {% if errors %}
+          <div class="errors">
+            {% for error in errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="actions">
+            <button type="submit">Envoyer</button>
+        </div>
+    </form>
+</main>
+
+</body>
+</html>

@@ -73,20 +73,24 @@
 <header>
     <a href="{% url 'homepage' %}" class="logo">LITReview</a>
     <nav>
-        <a href="">Flux</a>
+        <a href="{% url 'feed' %}">Flux</a>
         <a href="">Posts</a>
         <a href="">Abonnements</a>
-        <a href="">Se déconnecter</a>
+        <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
 </header>
 
 <main>
     <div class="actions">
+        <a href="{% url 'ticket_create' %}">
         <button>Demander une critique</button>
+        </a>
         <button>Créer une critique</button>
     </div>
 
     <p class="flux-vide">Votre flux est vide pour le moment.</p>
+    <p>Utilisateur connecté : {{ request.user }}</p>
+    <p>Est authentifié : {{ request.user.is_authenticated }}</p>
 </main>
 
 </body>
