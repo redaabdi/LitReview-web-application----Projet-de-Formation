@@ -27,5 +27,6 @@ urlpatterns = [
     path('register/', authentication_views.register, name='register'),
     path('feed/', feed_views.feed, name='feed'),
     path('ticket_create/', feed_views.ticket_create, name='ticket_create'),
-    path('logout/', authentication_views.logout_view, name='logout')
+    path('logout/', authentication_views.logout_view, name='logout'),
+    path('posts/', feed_views.posts, name='posts')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

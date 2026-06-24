@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LITReview - Flux</title>
+    <title>LITReview - Posts</title>
     <style>
         body {
             font-family: 'Georgia', serif;
@@ -61,10 +61,28 @@
             cursor: pointer;
         }
 
-        .flux-vide {
+        .posts-empty {
             text-align: center;
             color: #888;
             margin-top: 4rem;
+        }
+
+        .vosposts {
+            display: flex;
+            justify-content: center;
+        }
+        .box {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            border: 1px solid black;
+            margin-top : 10px;
+        }
+        .box img {
+            width: 100px;
+        }
+        .box small {
+            margin-left: auto;
         }
     </style>
 </head>
@@ -81,16 +99,25 @@
 </header>
 
 <main>
-    <div class="actions">
-        <a href="{% url 'ticket_create' %}">
-        <button>Demander une critique</button>
-        </a>
-        <button>Créer une critique</button>
-    </div>
+    {% if posts %}
+        <h2 class="vosposts">Vos posts</h2>
+        {% for post in posts %}
+            <div class="box">
+                <p>Vous avez publié un ticket</p>
+                <small>{{post.time_created}}</small>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.description }}</p>
+                {% if post.image %}
+                    <img src="{{ post.image.url }}">
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+            <p class="posts-empty">Vous n'avez publié aucun post pour le moment.</p>
+    {% endif %}
 
-    <p class="flux-vide">Votre flux est vide pour le moment.</p>
+
     <p>Utilisateur connecté : {{ request.user }}</p>
-    <p>Est authentifié : {{ request.user.is_authenticated }}</p>
 </main>
 
 </body>

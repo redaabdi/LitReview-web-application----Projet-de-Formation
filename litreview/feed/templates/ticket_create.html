@@ -107,11 +107,6 @@
             font-size: 1rem;
             cursor: pointer;
         }
-
-        .errors p {
-            color: #b00020;
-            margin: 0 0 1rem;
-        }
     </style>
 </head>
 <body>
@@ -120,7 +115,7 @@
     <a href="{% url 'homepage' %}" class="logo">LITReview</a>
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
-        <a href="">Posts</a>
+        <a href="{% url 'posts' %}">Posts</a>
         <a href="">Abonnements</a>
         <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
@@ -128,31 +123,35 @@
 
 <main>
     <h2>Créer un ticket</h2>
-
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label for="title">Titre</label>
+        <label>Titre</label>
+        {{ ticket_form.title.errors }}
         <input type="text" id="title" name="title">
 
-        <label for="description">Description</label>
+        <label>Description</label>
+        {{ ticket_form.description.errors }}
         <textarea id="description" name="description"></textarea>
 
         <label>Image</label>
         <label class="file-label" for="image">Télécharger fichier</label>
         <input type="file" id="image" name="image">
+        <span id="file-name">Aucun fichier sélectionné</span>
+        {{ ticket_form.image.errors }}
 
-        {% if errors %}
-          <div class="errors">
-            {% for error in errors %}
-              <p>{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
+        
+        <script>
+            document.getElementById('image').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
+                document.getElementById('file-name').textContent = fileName;
+            });
+        </script>
 
         <div class="actions">
             <button type="submit">Envoyer</button>
         </div>
+        <h2>{{ success }}</h2>
     </form>
 </main>
 
