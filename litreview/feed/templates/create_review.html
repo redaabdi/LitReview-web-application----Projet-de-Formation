@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LITReview - Créer une critique</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: white;
+            color: black;
+            margin: 0;
+        }
+
+        header {
+            border-bottom: 1px solid black;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        header a.logo {
+            text-decoration: none;
+            color: black;
+        }
+
+        nav {
+            position: absolute;
+            right: 2rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+        }
+
+        main {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        input[type="text"],
+        textarea {
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid black;
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 220px;
+            resize: vertical;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            width: fit-content;
+            margin-bottom: 2rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 0.75rem 2.2rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .box-ticket {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            border : 1px solid black
+        }
+
+        .box-review {
+            display: flex;
+            flex-direction: column;
+            margin-top : 10px ;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .rating {
+            display: flex;
+            gap : 10px
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'homepage' %}" class="logo">LITReview</a>
+    <nav>
+        <a href="{% url 'feed' %}">Flux</a>
+        <a href="{% url 'posts' %}">Posts</a>
+        <a href="">Abonnements</a>
+        <a href="{% url 'logout' %}">Se déconnecter</a>
+    </nav>
+</header>
+
+<main>
+    <h2>Créer une critique</h2>
+    <h2>{{ success }}</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="box-ticket">
+            <h3>Livre / Article :</h3>
+            <label>Titre</label>
+            {{ ticket_form.title.errors }}
+            <input type="text" id="title" name="title">
+
+            <label>Description *</label>
+            {{ ticket_form.description.errors }}
+            <textarea id="description" name="description"></textarea>
+
+            <label>Image *</label>
+            <label class="file-label" for="image">Télécharger fichier</label>
+            <input type="file" id="image" name="image">
+            <span id="file-name">Aucun fichier sélectionné</span>
+            {{ ticket_form.image.errors }}
+
+            <script>
+                document.getElementById('image').addEventListener('change', function() {
+                    const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
+                    document.getElementById('file-name').textContent = fileName;
+                });
+            </script>
+        </div>
+        <div class="box-review">
+            <h3>Critique :</h3>
+            <label>Titre</label>
+            {{ review_form.headline.errors }}
+            <input type="text" id="headline" name="headline">
+
+            <label>Note</label>
+            {{ review_form.rating.errors }}
+            <div class="rating">
+                <input type="radio" name="rating" value="0"> - 0
+                <input type="radio" name="rating" value="1"> - 1
+                <input type="radio" name="rating" value="2"> - 2
+                <input type="radio" name="rating" value="3"> - 3
+                <input type="radio" name="rating" value="4"> - 4
+                <input type="radio" name="rating" value="5"> - 5
+            </div>
+
+            <label>Commentaire * </label>
+            {{ review_form.body.errors }}
+            <textarea id="body" name="body"></textarea>
+        </div>
+        <small>* : Facultatif</small>
+        <div class="actions">
+            <button type="submit">Envoyer</button>
+        </div>
+    </form>
+</main>
+
+</body>
+</html>

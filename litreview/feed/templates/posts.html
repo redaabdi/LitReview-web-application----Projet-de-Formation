@@ -84,6 +84,16 @@
         .box small {
             margin-left: auto;
         }
+        button {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .buttons {
+            display: flex;
+            margin-left: auto;
+            
+
+        }
     </style>
 </head>
 <body>
@@ -110,6 +120,10 @@
                 {% if post.image %}
                     <img src="{{ post.image.url }}">
                 {% endif %}
+                <div class="buttons"> 
+                    <button>Modifier</button>
+                    <button>Supprimer</button>
+                </div>
             </div>
         {% endfor %}
     {% else %}

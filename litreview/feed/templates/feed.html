@@ -82,10 +82,12 @@
 
 <main>
     <div class="actions">
-        <a href="{% url 'ticket_create' %}">
+        <a href="{% url 'create_ticket' %}">
         <button>Demander une critique</button>
         </a>
+        <a href="{% url 'create_review' %}">
         <button>Créer une critique</button>
+        </a>
     </div>
 
     <p class="flux-vide">Votre flux est vide pour le moment.</p>
