@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .models import Ticket, Review, UserFollows
 from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, ReviewForm
+from itertools import chain
+from django.db.models import Value, CharField
 
 @login_required(login_url = 'homepage')
 def feed(request) :
@@ -25,28 +27,44 @@ def create_ticket(request) :
 def create_review(request):
     if request.method == 'POST' :
         ticket_form = TicketForm(request.POST, request.FILES)
-        if ticket_form.is_valid() :
+        review_form = ReviewForm(request.POST)
+        if ticket_form.is_valid() and review_form.is_valid():
             ticket = ticket_form.save(commit=False)
             ticket.user = request.user
-        else :
-            return render(request, 'create_review.html', {"ticket_form" : ticket_form})
-        review_form = ReviewForm(request.POST)
-        if review_form.is_valid():
             ticket.save()
             review = review_form.save(commit=False)
             review.user = request.user
             review.ticket = ticket
             review.save()
-            
-            
             return render(request, 'create_review.html', {'success' : 'Bravo votre critique à bien été publié !'})
-        else : 
-            return render(request, 'create_review.html', {"review_form" : review_form})
+        else :
+            return render(request, 'create_review.html', {"ticket_form" : ticket_form, "review_form" : review_form})
     else :
         return render(request, 'create_review.html')
 
 @login_required(login_url = 'homepage')
 def posts(request):
-    tickets = Ticket.objects.filter(user=request.user)
-    posts = sorted(tickets, key=lambda post: post.time_created, reverse=True)
-    return render(request, 'posts.html', context={'posts' : posts})
+    if request.method == 'POST' and request.POST.get('action') == "delete" :
+        data = request.POST
+        content_type = data.get("content_type")
+        pk = data.get("pk")
+        if content_type == 'TICKET' :
+            Ticket.objects.filter(pk=pk, user=request.user).delete()
+        elif content_type == 'REVIEW' :
+            Review.objects.filter(pk=pk, user=request.user).delete()
+        return redirect('posts')
+    else :
+        tickets = Ticket.objects.filter(user=request.user)
+        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+        reviews = Review.objects.filter(user=request.user)
+        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        posts = sorted(chain(tickets, reviews), key=lambda post: post.time_created, reverse=True)
+        return render(request, 'posts.html', context={'posts' : posts})
+
+@login_required(login_url = 'homepage')
+def edit_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk, user=request.user)
+    return render(request, 'edit_ticket.html', {'ticket' : ticket})
+
+
+

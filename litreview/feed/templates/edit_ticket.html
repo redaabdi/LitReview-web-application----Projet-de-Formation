@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LITReview - Créer un ticket</title>
+    <title>LITReview - Modifier un ticket</title>
     <style>
         body {
             font-family: 'Georgia', serif;
@@ -128,11 +128,11 @@
 
         <label>Titre</label>
         {{ ticket_form.title.errors }}
-        <input type="text" id="title" name="title">
+        <input type="text" id="title" name="title" value="{{ ticket.title }}">
 
         <label>Description</label>
         {{ ticket_form.description.errors }}
-        <textarea id="description" name="description"></textarea>
+        <textarea id="description" name="description">{{ ticket.description }}</textarea>
 
         <label>Image</label>
         <label class="file-label" for="image">Télécharger fichier</label>

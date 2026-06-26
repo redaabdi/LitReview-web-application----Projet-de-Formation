@@ -76,7 +76,7 @@
             flex-direction: column;
             padding: 5px;
             border: 1px solid black;
-            margin-top : 10px;
+            margin : 10px;
         }
         .box img {
             width: 100px;
@@ -91,8 +91,27 @@
         .buttons {
             display: flex;
             margin-left: auto;
-            
-
+        }
+        #modal {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;    /* reste en place même si on scroll */
+            inset: 0;           /* couvre tout l'écran (top/right/bottom/left: 0) */
+            background: rgba(195, 195, 195, 0.4);
+            z-index: 9999;      /* par dessus tout le reste */
+            border : 1px solid black;
+        }
+        #modal.active {
+            display: flex;
+        }
+        #modal-box {
+            background: white;
+            padding: 2rem;
+            border: 1px solid black;  /* ← uniquement ici */
+            border-radius: 8px;
+            text-align: center;
+            min-width: 300px;
         }
     </style>
 </head>
@@ -112,25 +131,78 @@
     {% if posts %}
         <h2 class="vosposts">Vos posts</h2>
         {% for post in posts %}
-            <div class="box">
-                <p>Vous avez publié un ticket</p>
-                <small>{{post.time_created}}</small>
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.description }}</p>
-                {% if post.image %}
-                    <img src="{{ post.image.url }}">
-                {% endif %}
-                <div class="buttons"> 
-                    <button>Modifier</button>
-                    <button>Supprimer</button>
+
+            {% if post.content_type == 'TICKET' %}
+                <div class="box ticket">
+                    <p>Vous avez publié un ticket</p>
+                    <small>{{post.time_created}}</small>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.description }}</p>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}">
+                    {% endif %}
+                    <div class="buttons"> 
+                        <a href="{% url 'edit_ticket' post.pk %}"><button type="button">Modifier</button></a>
+                        <button type="button" onclick="openModal('{{ post.pk }}', 'TICKET')">Supprimer</button>
+                    </div>
                 </div>
-            </div>
+            {% elif post.content_type == 'REVIEW' %}
+                <div class="box review">
+                    <p>Vous avez publié une critique</p>
+                    <small>{{post.time_created}}</small>
+                    <h3>{{ post.headline }} -
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= post.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    </h3>
+                    <p>{{ post.body }}</p>
+                    <div class="box ticket">
+                        <p>Vous avez publié un ticket</p>
+                        <small>{{post.ticket.time_created}}</small>
+                        <h3>{{ post.ticket.title }}</h3>
+                        <p>{{ post.ticket.description }}</p>
+                        {% if post.ticket.image %}
+                            <img src="{{ post.ticket.image.url }}">
+                        {% endif %}
+                    </div>
+                    <div class="buttons"> 
+                        <button>Modifier</button>
+                        <button type="button" onclick="openModal('{{ post.pk }}', 'REVIEW')">Supprimer</button>
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
     {% else %}
             <p class="posts-empty">Vous n'avez publié aucun post pour le moment.</p>
     {% endif %}
 
-
+    <div id="modal">
+        <div id="modal-box">
+            <p>Voulez-vous vraiment supprimer ce post ?</p>
+            <form id="modal-form" method="POST">
+                <input type="hidden" name="action" value="delete">
+                {% csrf_token %}
+                <input type="hidden" id="modal-pk" name="pk" value="">
+                <input type="hidden" id="modal-type" name="content_type" value="">
+                <button type="submit">Oui, supprimer</button>
+                <button type="button" onclick="closeModal()">Annuler</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function openModal(pk, contentType) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modal-pk').value = pk;
+            document.getElementById('modal-type').value = contentType;
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+    </script>
     <p>Utilisateur connecté : {{ request.user }}</p>
 </main>
 
