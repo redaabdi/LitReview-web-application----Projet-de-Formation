@@ -29,6 +29,6 @@ urlpatterns = [
     path('create_ticket/', feed_views.create_ticket, name='create_ticket'),
     path('logout/', authentication_views.logout_view, name='logout'),
     path('posts/', feed_views.posts, name='posts'),
-    path('create_review/', feed_views.create_review, name='create_review')
+    path('create_review/', feed_views.create_review, name='create_review'),
     path('ticket/edit/<int:pk>', feed_views.edit_ticket, name='edit_ticket')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -107,6 +107,9 @@
             font-size: 1rem;
             cursor: pointer;
         }
+        img {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -127,32 +130,52 @@
         {% csrf_token %}
 
         <label>Titre</label>
-        {{ ticket_form.title.errors }}
         <input type="text" id="title" name="title" value="{{ ticket.title }}">
+        {{ ticket_form.title.errors }}
 
         <label>Description</label>
-        {{ ticket_form.description.errors }}
         <textarea id="description" name="description">{{ ticket.description }}</textarea>
+        {{ ticket_form.description.errors }}
 
         <label>Image</label>
         <label class="file-label" for="image">Télécharger fichier</label>
         <input type="file" id="image" name="image">
-        <span id="file-name">Aucun fichier sélectionné</span>
+        {% if ticket.image %}
+            <img id="image_view" src="{{ ticket.image.url }}">
+        {% endif %}
+        <span id="file-name">
+            {% if ticket.image %}
+                {{ ticket.image.name }}
+            {% else %}
+                Aucun fichier sélectionné
+            {% endif %}
+        </span>
         {{ ticket_form.image.errors }}
 
         <script>
             document.getElementById('image').addEventListener('change', function() {
-                const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-                document.getElementById('file-name').textContent = fileName;
+                const file = this.files[0];
+                if (file) {
+                    document.getElementById('file-name').textContent = file.name;
+                    document.getElementById('image_view').src = URL.createObjectURL(file);
+
+                }
+                
             });
         </script>
-
         <div class="actions">
             <button type="submit">Envoyer</button>
         </div>
         <h2>{{ success }}</h2>
     </form>
 </main>
-
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('image').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
+                document.getElementById('file-name').textContent = fileName;
+            });
+        });
+    </script> -->
 </body>
 </html>

@@ -64,7 +64,17 @@ def posts(request):
 @login_required(login_url = 'homepage')
 def edit_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk, user=request.user)
-    return render(request, 'edit_ticket.html', {'ticket' : ticket})
+    if request.method == 'POST' :
+        ticket_form = TicketForm(request.POST, request.FILES, instance=ticket)
+        print(request.POST)
+        if ticket_form.is_valid() :
+            #if delete_input == 'true' -> .delete
+            ticket_form.save()
+            return redirect('posts')
+        else :
+            return render(request, 'edit_ticket.html', {'ticket' : ticket, 'tiket_form' : ticket_form})
+    else :
+        return render(request, 'edit_ticket.html', {'ticket' : ticket})
 
 
 
