@@ -107,6 +107,29 @@
             font-size: 1rem;
             cursor: pointer;
         }
+
+        img {
+            width: 200px;
+        }
+
+         .image-wrapper {
+            position: relative;
+            width: 200px;
+        }
+
+        #close-cross {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            margin: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +139,7 @@
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
         <a href="{% url 'posts' %}">Posts</a>
-        <a href="">Abonnements</a>
+        <a href="{% url 'follows' %}">Abonnements</a>
         <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
 </header>
@@ -135,6 +158,10 @@
         <textarea id="description" name="description"></textarea>
 
         <label>Image</label>
+        <div class="image-wrapper">
+            <img id="image-view" src="">
+            <p id="close-cross" style="display: none;">X</p>
+        </div>
         <label class="file-label" for="image">Télécharger fichier</label>
         <input type="file" id="image" name="image">
         <span id="file-name">Aucun fichier sélectionné</span>
@@ -142,8 +169,19 @@
 
         <script>
             document.getElementById('image').addEventListener('change', function() {
-                const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-                document.getElementById('file-name').textContent = fileName;
+                const file = this.files[0];
+                if (file) {
+                    document.getElementById('file-name').textContent = file.name;
+                    document.getElementById('image-view').src = URL.createObjectURL(file);
+                    document.getElementById('close-cross').style.display = ''
+                }
+            });
+
+            document.getElementById('close-cross').addEventListener('click', function() {
+                document.getElementById('image').value = '';
+                document.getElementById('image-view').src = '';
+                document.getElementById('file-name').textContent = 'Aucun fichier sélectionné';
+                document.getElementById('close-cross').style.display = 'none';
             });
         </script>
 

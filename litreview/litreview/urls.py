@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from authentication import views as authentication_views
 from feed import views as feed_views
+from follows import views as follows_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -30,5 +31,7 @@ urlpatterns = [
     path('logout/', authentication_views.logout_view, name='logout'),
     path('posts/', feed_views.posts, name='posts'),
     path('create_review/', feed_views.create_review, name='create_review'),
-    path('ticket/edit/<int:pk>', feed_views.edit_ticket, name='edit_ticket')
+    path('ticket/edit/<int:pk>', feed_views.edit_ticket, name='edit_ticket'),
+    path('review/edit/<int:pk>', feed_views.edit_review, name='edit_review'),
+    path('follows/', follows_views.follows, name="follows")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

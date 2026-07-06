@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Ticket, Review, UserFollows
+from .models import Ticket, Review
 from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, ReviewForm
 from itertools import chain
@@ -18,7 +18,7 @@ def create_ticket(request) :
             ticket.user = request.user
             ticket.save()
             return render(request, 'create_ticket.html', {'success' : 'Bravo votre demande à bien été publié'})
-        else : 
+        else :
             return render(request, 'create_ticket.html', {'ticket_form' : ticket_form})
     else :
         return render(request, 'create_ticket.html')
@@ -68,13 +68,33 @@ def edit_ticket(request, pk):
         ticket_form = TicketForm(request.POST, request.FILES, instance=ticket)
         print(request.POST)
         if ticket_form.is_valid() :
-            #if delete_input == 'true' -> .delete
-            ticket_form.save()
-            return redirect('posts')
+            ticket = ticket_form.save(commit=False)
+            if request.POST.get('delete-image-boolean') == 'true' :
+                ticket.image.delete()
+            ticket.save()
+            return render(request, 'edit_ticket.html', {'ticket' : ticket, 'success' : 'Bravo votre ticket à bien été modifié'})
         else :
-            return render(request, 'edit_ticket.html', {'ticket' : ticket, 'tiket_form' : ticket_form})
+            return render(request, 'edit_ticket.html', {'ticket' : ticket, 'ticket_form' : ticket_form})
     else :
         return render(request, 'edit_ticket.html', {'ticket' : ticket})
 
+@login_required(login_url = 'homepage')
+def edit_review(request, pk) :
+    review = Review.objects.get(pk=pk, user=request.user)
+    if request.method == 'POST' :
+        ticket_form = TicketForm(request.POST, request.FILES, instance=review.ticket)
+        review_form = ReviewForm(request.POST, instance=review)
+        if ticket_form.is_valid() and review_form.is_valid():
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return render(request, 'edit_review.html', {'review' : review, 'success' : 'Bravo votre critique à bien été modifié'})
+        else :
+            return render(request, 'edit_review.html', {'ticket_form' : ticket_form, 'review_form' : review_form, 'review' : review})
+    return render(request, 'edit_review.html', {'review' : review})
 
 

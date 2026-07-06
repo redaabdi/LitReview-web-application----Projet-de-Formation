@@ -122,7 +122,7 @@
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
         <a href="{% url 'posts' %}">Posts</a>
-        <a href="">Abonnements</a>
+        <a href="{% url 'follows' %}">Abonnements</a>
         <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
 </header>
@@ -170,7 +170,7 @@
                         {% endif %}
                     </div>
                     <div class="buttons"> 
-                        <button>Modifier</button>
+                        <a href="{% url 'edit_review' post.pk %}"><button type="button">Modifier</button></a>
                         <button type="button" onclick="openModal('{{ post.pk }}', 'REVIEW')">Supprimer</button>
                     </div>
                 </div>

@@ -75,7 +75,7 @@
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
         <a href="{% url 'posts' %}">Posts</a>
-        <a href="">Abonnements</a>
+        <a href="{% url 'follows' %}">Abonnements</a>
         <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
 </header>
@@ -92,7 +92,6 @@
 
     <p class="flux-vide">Votre flux est vide pour le moment.</p>
     <p>Utilisateur connecté : {{ request.user }}</p>
-    <p>Est authentifié : {{ request.user.is_authenticated }}</p>
 </main>
 
 </body>

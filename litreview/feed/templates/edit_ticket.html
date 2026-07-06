@@ -86,6 +86,7 @@
             font-family: 'Georgia', serif;
             cursor: pointer;
             width: fit-content;
+            margin-top: 2rem;
             margin-bottom: 2rem;
         }
 
@@ -110,6 +111,29 @@
         img {
             width: 200px;
         }
+
+        #close-cross {
+            cursor: pointer;
+        }
+
+         .image-wrapper {
+            position: relative;
+            width: 200px;
+        }
+
+        #close-cross {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            margin: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -119,13 +143,14 @@
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
         <a href="{% url 'posts' %}">Posts</a>
-        <a href="">Abonnements</a>
+        <a href="{% url 'follows' %}">Abonnements</a>
         <a href="{% url 'logout' %}">Se déconnecter</a>
     </nav>
 </header>
 
 <main>
-    <h2>Créer un ticket</h2>
+    <h2>Modifier un ticket</h2>
+    <h3>{{ success }}</h3>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -138,44 +163,48 @@
         {{ ticket_form.description.errors }}
 
         <label>Image</label>
+        {% if ticket.image %}
+            <div class="image-wrapper">
+                <img id="image-view" src="{{ ticket.image.url }}">
+                <p id="close-cross">X</p>
+            </div>
+            <span id="file-name">{{ ticket.image.name }}</span>
+            
+            {{ ticket_form.image.errors }}
+        {% elif not ticket.image %}
+            <div class="image-wrapper">
+                <img id="image-view" src="">
+                <p id="close-cross" style="display: none;">X</p>
+            </div>
+            <span id="file-name">Aucun fichier sélectionné</span>
+        {% endif %}
         <label class="file-label" for="image">Télécharger fichier</label>
         <input type="file" id="image" name="image">
-        {% if ticket.image %}
-            <img id="image_view" src="{{ ticket.image.url }}">
-        {% endif %}
-        <span id="file-name">
-            {% if ticket.image %}
-                {{ ticket.image.name }}
-            {% else %}
-                Aucun fichier sélectionné
-            {% endif %}
-        </span>
-        {{ ticket_form.image.errors }}
+        <input type="hidden" id="delete-image-boolean" name="delete-image-boolean" value="false">
 
         <script>
             document.getElementById('image').addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
                     document.getElementById('file-name').textContent = file.name;
-                    document.getElementById('image_view').src = URL.createObjectURL(file);
-
+                    document.getElementById('image-view').src = URL.createObjectURL(file);
+                    document.getElementById('close-cross').style.display = ''
+                    document.getElementById('delete-image-boolean').value = 'false';
                 }
-                
+            });
+
+            document.getElementById('close-cross').addEventListener('click', function() {
+                document.getElementById('image-view').src = '';
+                document.getElementById('file-name').textContent = 'Aucun fichier sélectionné';
+                document.getElementById('image').value = '';
+                document.getElementById('close-cross').style.display = 'none';
+                document.getElementById('delete-image-boolean').value = 'true';
             });
         </script>
         <div class="actions">
             <button type="submit">Envoyer</button>
         </div>
-        <h2>{{ success }}</h2>
     </form>
 </main>
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('image').addEventListener('change', function() {
-                const fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-                document.getElementById('file-name').textContent = fileName;
-            });
-        });
-    </script> -->
 </body>
 </html>

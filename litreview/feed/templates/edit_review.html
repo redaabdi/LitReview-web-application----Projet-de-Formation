@@ -165,7 +165,7 @@
 </header>
 
 <main>
-    <h2>Créer une critique</h2>
+    <h2>Modifier une critique</h2>
     <h2>{{ success }}</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
@@ -174,21 +174,31 @@
             <h3>Livre / Article :</h3>
             <label>Titre</label>
             {{ ticket_form.title.errors }}
-            <input type="text" id="title" name="title">
+            <input type="text" id="title" name="title" value="{{ review.ticket.title }}">
 
             <label>Description *</label>
             {{ ticket_form.description.errors }}
-            <textarea id="description" name="description"></textarea>
+            <textarea id="description" name="description">{{ review.ticket.description }}</textarea>
 
             <label>Image</label>
-            <div class="image-wrapper">
-                <img id="image-view" src="">
-                <p id="close-cross" style="display: none;">X</p>
-            </div>
+            {% if review.ticket.image %}
+                <div class="image-wrapper">
+                    <img id="image-view" src="{{ review.ticket.image.url }}">
+                    <p id="close-cross">X</p>
+                </div>
+                <span id="file-name">{{ review.ticket.image.name }}</span>
+                
+                {{ ticket_form.image.errors }}
+            {% elif not review.ticket.image %}
+                <div class="image-wrapper">
+                    <img id="image-view" src="">
+                    <p id="close-cross" style="display: none;">X</p>
+                </div>
+                <span id="file-name">Aucun fichier sélectionné</span>
+            {% endif %}
             <label class="file-label" for="image">Télécharger fichier</label>
             <input type="file" id="image" name="image">
-            <span id="file-name">Aucun fichier sélectionné</span>
-            {{ ticket_form.image.errors }}
+            <input type="hidden" id="delete-image-boolean" name="delete-image-boolean" value="false">
 
             <script>
                 document.getElementById('image').addEventListener('change', function() {
@@ -197,14 +207,16 @@
                         document.getElementById('file-name').textContent = file.name;
                         document.getElementById('image-view').src = URL.createObjectURL(file);
                         document.getElementById('close-cross').style.display = ''
+                        document.getElementById('delete-image-boolean').value = 'false';
                     }
                 });
 
                 document.getElementById('close-cross').addEventListener('click', function() {
-                    document.getElementById('image').value = '';
                     document.getElementById('image-view').src = '';
                     document.getElementById('file-name').textContent = 'Aucun fichier sélectionné';
+                    document.getElementById('image').value = '';
                     document.getElementById('close-cross').style.display = 'none';
+                    document.getElementById('delete-image-boolean').value = 'true';
                 });
             </script>
         </div>
@@ -212,22 +224,22 @@
             <h3>Critique :</h3>
             <label>Titre</label>
             {{ review_form.headline.errors }}
-            <input type="text" id="headline" name="headline">
+            <input type="text" id="headline" name="headline" value="{{ review.headline }}">
 
             <label>Note</label>
             {{ review_form.rating.errors }}
             <div class="rating">
-                <input type="radio" name="rating" value="0"> 0
-                <input type="radio" name="rating" value="1"> 1
-                <input type="radio" name="rating" value="2"> 2
-                <input type="radio" name="rating" value="3"> 3
-                <input type="radio" name="rating" value="4"> 4
-                <input type="radio" name="rating" value="5"> 5
+                <input type="radio" name="rating" value="0" {% if review.rating == 0 %}checked{% endif %}> 0
+                <input type="radio" name="rating" value="1" {% if review.rating == 1 %}checked{% endif %}> 1
+                <input type="radio" name="rating" value="2" {% if review.rating == 2 %}checked{% endif %}> 2
+                <input type="radio" name="rating" value="3" {% if review.rating == 3 %}checked{% endif %}> 3
+                <input type="radio" name="rating" value="4" {% if review.rating == 4 %}checked{% endif %}> 4
+                <input type="radio" name="rating" value="5" {% if review.rating == 5 %}checked{% endif %}> 5
             </div>
 
             <label>Commentaire * </label>
             {{ review_form.body.errors }}
-            <textarea id="body" name="body"></textarea>
+            <textarea id="body" name="body">{{ review.body }}</textarea>
         </div>
         <small>* : Facultatif</small>
         <div class="actions">
