@@ -21,6 +21,11 @@
             position: relative;
         }
 
+        .profil {
+            position: absolute;
+            left: 2rem;
+        }
+
         header a.logo {
             text-decoration: none;
             color: black;
@@ -122,6 +127,9 @@
 <body>
 
 <header>
+    <div class="profil">
+        <p>Profil : {{ request.user }}</p>
+    </div>
     <a href="{% url 'homepage' %}" class="logo">LITReview</a>
     <nav>
         <a href="{% url 'feed' %}">Flux</a>

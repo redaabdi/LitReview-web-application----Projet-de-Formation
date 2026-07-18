@@ -12,6 +12,11 @@
             margin: 0;
         }
 
+        .profil {
+            position: absolute;
+            left: 2rem;
+        }
+
         header {
             border-bottom: 1px solid black;
             padding: 1.2rem 2rem;
@@ -98,6 +103,9 @@
 <body>
 
 <header>
+    <div class="profil">
+        <p>Profil : {{ request.user }}</p>
+    </div>
     <a href="{% url 'homepage' %}" class="logo">LITReview</a>
     <nav>
         <a href="{% url 'feed' %}">Flux</a>
@@ -177,7 +185,6 @@
         {% else %}
             <p class="flux-vide">Votre flux est vide pour le moment.</p>
         {% endif %}
-        <p>Utilisateur connecté : {{ request.user }}</p>
     </div>
 
 
