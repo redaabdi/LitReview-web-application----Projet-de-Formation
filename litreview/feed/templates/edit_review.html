@@ -169,12 +169,12 @@
             {{ ticket_form.title.errors }}
             <input type="text" id="title" name="title" value="{{ review.ticket.title }}">
 
-            <label>Description *</label>
+            <label>Description (*)</label>
             {{ ticket_form.description.errors }}
             <textarea id="description" name="description">{{ review.ticket.description }}</textarea>
 
             <div class="image-view">
-                <p>Image</p>
+                <p>Image (*)</p>
                 {% if review.ticket.image %}
                     <div class="image-wrapper">
                         <img id="image-view" src="{{ review.ticket.image.url }}" alt="Image associé à l'oeuvre">
@@ -238,7 +238,7 @@
                 <label><input type="radio" name="rating" value="5" {% if review.rating == 5 %}checked{% endif %}> 5</label>
             </div>
 
-            <label for="body">Commentaire * </label>
+            <label for="body">Commentaire (*) </label>
             {{ review_form.body.errors }}
             <textarea id="body" name="body">{{ review.body }}</textarea>
         </div>

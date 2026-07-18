@@ -149,12 +149,12 @@
         <input type="text" id="title" name="title" value="{{ ticket.title }}">
         {{ ticket_form.title.errors }}
 
-        <label for="description">Description</label>
+        <label for="description">Description (*)</label>
         <textarea id="description" name="description">{{ ticket.description }}</textarea>
         {{ ticket_form.description.errors }}
 
 
-        <label>Image</label>
+        <label>Image (*)</label>
         {% if ticket.image %}
             <div class="image-wrapper">
                 <img id="image-view" src="{{ ticket.image.url }}" alt="Image associé à l'oeuvre">
@@ -197,6 +197,7 @@
                 document.getElementById('image').style.display = ''
             });
         </script>
+        <small>* : Facultatif</small>
         <div class="actions">
             <button type="submit">Envoyer</button>
         </div>

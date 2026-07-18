@@ -146,12 +146,12 @@
         {{ ticket_form.title.errors }}
         <input type="text" id="title" name="title">
 
-        <label for="description">Description</label>
+        <label for="description">Description (*)</label>
         {{ ticket_form.description.errors }}
         <textarea id="description" name="description"></textarea>
 
         <div class="image-view">
-            <p>Image</p>
+            <p>Image (*)</p>
             <div class="image-wrapper">
                 <img id="image-view" src="" alt="">
                 <p id="close-cross" style="display: none;" aria-label="Retirer l'image sélectionnée">×</p>
@@ -178,6 +178,8 @@
                 document.getElementById('close-cross').style.display = 'none';
             });
         </script>
+
+        <small>* : Facultatif</small>
 
         <div class="actions">
             <button type="submit">Envoyer</button>
