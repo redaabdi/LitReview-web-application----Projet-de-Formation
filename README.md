@@ -1,6 +1,6 @@
-# LITRevu
+# LITReview
 
-LITRevu est une application web Django qui permet à une communauté d'utilisateurs de demander, rédiger et lire des critiques de livres et d'articles.
+LITReview est une application web Django qui permet à une communauté d'utilisateurs de demander, rédiger et lire des critiques de livres et d'articles.
 
 ## Prérequis
 
@@ -10,7 +10,7 @@ Pour exécuter ce projet, vous devez avoir les outils suivants installés :
 - **Git** : Outil de contrôle de version pour cloner le dépôt.
 - **Terminal** : Un terminal comme Command Prompt (Windows), Terminal (macOS), ou un shell Linux.
 
-## Installer et lancer LITRevu
+## Installer et lancer LITReview
 
 ### 1. Cloner ce dépôt Github en local
 
