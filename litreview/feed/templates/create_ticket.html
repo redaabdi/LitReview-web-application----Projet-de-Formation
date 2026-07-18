@@ -77,22 +77,6 @@
             resize: vertical;
         }
 
-        .file-label {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid #111;
-            border-radius: 8px;
-            background: transparent;
-            font-family: 'Georgia', serif;
-            cursor: pointer;
-            width: fit-content;
-            margin-bottom: 2rem;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
         .actions {
             display: flex;
             justify-content: flex-end;
@@ -146,33 +130,35 @@
 
 <main>
     <h2>Créer un ticket</h2>
+    <h2>{{ success }}</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label>Titre</label>
+        <label for="title">Titre</label>
         {{ ticket_form.title.errors }}
         <input type="text" id="title" name="title">
 
-        <label>Description</label>
+        <label for="description">Description</label>
         {{ ticket_form.description.errors }}
         <textarea id="description" name="description"></textarea>
 
-        <label>Image</label>
-        <div class="image-wrapper">
-            <img id="image-view" src="">
-            <p id="close-cross" style="display: none;">X</p>
+        <div class="image-view">
+            <p>Image</p>
+            <div class="image-wrapper">
+                <img id="image-view" src="" alt="">
+                <p id="close-cross" style="display: none;" aria-label="Retirer l'image sélectionnée">×</p>
+            </div>
+
+            <input type="file" id="image" name="image">
+            {{ ticket_form.image.errors }}
         </div>
-        <label class="file-label" for="image">Télécharger fichier</label>
-        <input type="file" id="image" name="image">
-        <span id="file-name">Aucun fichier sélectionné</span>
-        {{ ticket_form.image.errors }}
 
         <script>
             document.getElementById('image').addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
-                    document.getElementById('file-name').textContent = file.name;
                     document.getElementById('image-view').src = URL.createObjectURL(file);
+                    document.getElementById('image-view').alt = "Image associé à l'oeuvre";
                     document.getElementById('close-cross').style.display = ''
                 }
             });
@@ -180,7 +166,7 @@
             document.getElementById('close-cross').addEventListener('click', function() {
                 document.getElementById('image').value = '';
                 document.getElementById('image-view').src = '';
-                document.getElementById('file-name').textContent = 'Aucun fichier sélectionné';
+                document.getElementById('image-view').alt = '';
                 document.getElementById('close-cross').style.display = 'none';
             });
         </script>
@@ -188,7 +174,6 @@
         <div class="actions">
             <button type="submit">Envoyer</button>
         </div>
-        <h2>{{ success }}</h2>
     </form>
 </main>
 

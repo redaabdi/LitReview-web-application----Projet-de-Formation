@@ -77,23 +77,6 @@
             resize: vertical;
         }
 
-        .file-label {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid #111;
-            border-radius: 8px;
-            background: transparent;
-            font-family: 'Georgia', serif;
-            cursor: pointer;
-            width: fit-content;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
         .actions {
             display: flex;
             justify-content: flex-end;
@@ -154,32 +137,33 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label>Titre</label>
+        <label for="title">Titre</label>
         <input type="text" id="title" name="title" value="{{ ticket.title }}">
         {{ ticket_form.title.errors }}
 
-        <label>Description</label>
+        <label for="description">Description</label>
         <textarea id="description" name="description">{{ ticket.description }}</textarea>
         {{ ticket_form.description.errors }}
+
 
         <label>Image</label>
         {% if ticket.image %}
             <div class="image-wrapper">
-                <img id="image-view" src="{{ ticket.image.url }}">
-                <p id="close-cross">X</p>
+                <img id="image-view" src="{{ ticket.image.url }}" alt="Image associé à l'oeuvre">
+                <p id="close-cross" aria-label="Retirer l'image sélectionnée">X</p>
             </div>
             <span id="file-name">{{ ticket.image.name }}</span>
+            <input type="file" id="image" name="image" style="display: none;">
             
             {{ ticket_form.image.errors }}
         {% elif not ticket.image %}
             <div class="image-wrapper">
-                <img id="image-view" src="">
-                <p id="close-cross" style="display: none;">X</p>
+                <img id="image-view" src="" alt="">
+                <p id="close-cross" style="display: none;" aria-label="Retirer l'image sélectionnée">X</p>
             </div>
-            <span id="file-name">Aucun fichier sélectionné</span>
+            <span id="file-name"></span>
+            <input type="file" id="image" name="image">
         {% endif %}
-        <label class="file-label" for="image">Télécharger fichier</label>
-        <input type="file" id="image" name="image">
         <input type="hidden" id="delete-image-boolean" name="delete-image-boolean" value="false">
 
         <script>
@@ -188,17 +172,21 @@
                 if (file) {
                     document.getElementById('file-name').textContent = file.name;
                     document.getElementById('image-view').src = URL.createObjectURL(file);
+                    document.getElementById('image-view').alt = "Image associé à l'oeuvre";
                     document.getElementById('close-cross').style.display = ''
                     document.getElementById('delete-image-boolean').value = 'false';
+                    document.getElementById('image').style.display = 'none'
                 }
             });
 
             document.getElementById('close-cross').addEventListener('click', function() {
                 document.getElementById('image-view').src = '';
-                document.getElementById('file-name').textContent = 'Aucun fichier sélectionné';
+                document.getElementById('image-view').alt = '';
+                document.getElementById('file-name').textContent = '';
                 document.getElementById('image').value = '';
                 document.getElementById('close-cross').style.display = 'none';
                 document.getElementById('delete-image-boolean').value = 'true';
+                document.getElementById('image').style.display = ''
             });
         </script>
         <div class="actions">

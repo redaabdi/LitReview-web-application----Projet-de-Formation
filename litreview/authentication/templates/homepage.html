@@ -23,6 +23,11 @@
       .signup, .login {
           padding: 5rem 4rem;
       }
+
+      a {
+        text-decoration: none;
+        color: black;
+      }
       h2 {
           font-size: 1.6rem;
           font-weight: 400;
@@ -42,6 +47,18 @@
           font-family: 'Georgia', serif;
           cursor: pointer;
       }
+      
+      .button {
+          display: flex;
+          width: fit-content;
+          padding: 0.75rem 2rem;
+          border: 1px solid #111;
+          border-radius: 8px;
+          background: transparent;
+          font-family: 'Georgia', serif;
+          font-size: 1rem;
+          cursor: pointer;
+      }
       .login button {
           display: block;
           margin-top: 1rem;
@@ -55,17 +72,15 @@
   <main>
     <section class="signup">
       <h2>Inscrivez-vous maintenant</h2>
-      <a href="{% url 'register' %}">
-        <button>S'inscrire</button>
-      </a>
+      <a href="{% url 'register' %}" class="button">S'inscrire </a>
     </section>
 
     <section class="login">
       <h2>Connectez-vous</h2>
       <form method="POST">
         {% csrf_token %}
-        <input type="text" placeholder="Nom d'utilisateur" name="username">
-        <input type="password" placeholder="Mot de passe" name="password">
+        <input type="text" aria-label="Nom d'utilisateur" placeholder="Nom d'utilisateur" name="username">
+        <input type="password" aria-label="Mot de passe" placeholder="Mot de passe" name="password">
         <button type="submit">Se connecter</button>
         {% if success %}
           <p>{{ success }}</p>

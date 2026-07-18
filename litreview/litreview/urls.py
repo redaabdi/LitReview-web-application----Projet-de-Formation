@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from authentication import views as authentication_views
@@ -23,15 +24,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('homepage/', authentication_views.homepage, name='homepage'),
-    path('register/', authentication_views.register, name='register'),
-    path('feed/', feed_views.feed, name='feed'),
-    path('create_ticket/', feed_views.create_ticket, name='create_ticket'),
-    path('logout/', authentication_views.logout_view, name='logout'),
-    path('posts/', feed_views.posts, name='posts'),
-    path('create_review/', feed_views.create_review, name='create_review'),
-    path('ticket/edit/<int:pk>', feed_views.edit_ticket, name='edit_ticket'),
-    path('review/edit/<int:pk>', feed_views.edit_review, name='edit_review'),
-    path('follows/', follows_views.follows, name="follows")
+    path("admin/", admin.site.urls),
+    path("homepage/", authentication_views.homepage, name="homepage"),
+    path("register/", authentication_views.register, name="register"),
+    path("feed/", feed_views.feed, name="feed"),
+    path("create_ticket/", feed_views.create_ticket, name="create_ticket"),
+    path("logout/", authentication_views.logout_view, name="logout"),
+    path("posts/", feed_views.posts, name="posts"),
+    path("create_review/", feed_views.create_review, name="create_review"),
+    path("edit_ticket/<int:pk>", feed_views.edit_ticket, name="edit_ticket"),
+    path("edit_review/<int:pk>", feed_views.edit_review, name="edit_review"),
+    path(
+        "create_review_response/<int:pk>",
+        feed_views.create_review_response,
+        name="create_review_response",
+    ),
+    path("follows/", follows_views.follows, name="follows"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

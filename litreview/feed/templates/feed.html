@@ -33,7 +33,7 @@
             gap: 1.5rem;
         }
 
-        nav a {
+        a {
             text-decoration: none;
             color: black;
         }
@@ -44,14 +44,17 @@
             padding: 0 1rem;
         }
 
-        .actions {
+        .create {
             display: flex;
             gap: 2rem;
             justify-content: center;
             margin-bottom: 2rem;
         }
 
-        button {
+        .button {
+            display: flex;
+            width: fit-content;
+            /* margin-left: auto; */
             padding: 0.75rem 2rem;
             border: 1px solid #111;
             border-radius: 8px;
@@ -61,10 +64,34 @@
             cursor: pointer;
         }
 
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .flux-vide {
             text-align: center;
             color: #888;
             margin-top: 4rem;
+        }
+
+        .feed {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .box {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            border: 1px solid black;
+            margin : 10px;
+        }
+        .box img {
+            width: 100px;
+        }
+        .box small {
+            margin-left: auto;
         }
     </style>
 </head>
@@ -81,17 +108,81 @@
 </header>
 
 <main>
-    <div class="actions">
-        <a href="{% url 'create_ticket' %}">
-        <button>Demander une critique</button>
-        </a>
-        <a href="{% url 'create_review' %}">
-        <button>Créer une critique</button>
-        </a>
+    <div class="create">
+        <a href="{% url 'create_ticket' %}" class="button">Demander une critique</a>
+        <a href="{% url 'create_review' %}" class="button">Créer une critique</a>
     </div>
 
-    <p class="flux-vide">Votre flux est vide pour le moment.</p>
-    <p>Utilisateur connecté : {{ request.user }}</p>
+    <div class="feed">
+        {% if feed %}
+            {% for post in feed %}
+                {% if post.content_type == 'TICKET' %}
+                    <div class="box ticket">
+                        {% if post.user == request.user %}
+                            <p>Vous avez publié un ticket</p>
+                        {% else %}
+                            <p>{{post.user.username}} a publié un ticket</p>
+                        {% endif %}
+                        <small>{{post.time_created}}</small>
+                        <h3>{{ post.title }}</h3>
+                        <p>{{ post.description }}</p>
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Image associé à l'oeuvre">
+                        {% endif %}
+                        {% if not post.already_reviewed %}
+                            <div class="buttons"> 
+                                <a href="{% url 'create_review_response' post.pk %}" class="button">Créer une critique</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% elif post.content_type == 'REVIEW'%}
+                    <div class="box review">
+                        {% if post.user == request.user %}
+                            <p>Vous avez publié une critique</p>
+                        {% else %}
+                            <p>{{post.user.username}} a publié une critique</p>
+                        {% endif %}
+                        <small>{{post.time_created}}</small>
+                        <h3>{{ post.headline }} -
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= post.rating %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        </h3>
+                        <p>{{ post.body }}</p>
+                        <div class="box ticket">
+                            {% if post.ticket.user == request.user %}
+                                <p>Vous avez publié un ticket</p>
+                            {% else %}
+                                <p>{{post.ticket.user.username}} a publié un ticket</p>
+                            {% endif %}
+                            <small>{{post.ticket.time_created}}</small>
+                            <h3>{{ post.ticket.title }}</h3>
+                            <p>{{ post.ticket.description }}</p>
+                            {% if post.ticket.image %}
+                                <img src="{{ post.ticket.image.url }}" alt="Image associé à l'oeuvre">
+                            {% endif %}
+                            {% if not post.ticket.already_reviewed %}
+                                <div class="buttons"> 
+                                    <a href="{% url 'create_review_response' post.ticket.pk %}" class="button">Créer une critique</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="flux-vide">Votre flux est vide pour le moment.</p>
+        {% endif %}
+        <p>Utilisateur connecté : {{ request.user }}</p>
+    </div>
+
+
+
+    
 </main>
 
 </body>

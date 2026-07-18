@@ -58,9 +58,6 @@
   }
   </style>
 </head>
-<body>    
-  </style>
-</head>
 <body>
 
   <header>
@@ -73,9 +70,9 @@
       <h2>Inscrivez-vous</h2>
       <form method="POST">
         {% csrf_token %}
-        <input type="text" placeholder="Nom d'utilisateur" name="username">
-        <input type="password" placeholder="Mot de passe" name="password">
-        <input type="password" placeholder="Confirmez le mot de passe" name="password_confirm">
+        <input type="text" aria-label="Nom d'utilisateur" placeholder="Nom d'utilisateur" name="username">
+        <input type="password" aria-label="Mot de passe" placeholder="Mot de passe" name="password">
+        <input type="password" aria-label="Confirmez le mot de passe" placeholder="Confirmez le mot de passe" name="password_confirm">
         <button type="submit">S'inscrire</button>
         {% if success %}
           <p>{{ success }}</p>

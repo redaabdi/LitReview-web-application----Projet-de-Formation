@@ -33,10 +33,11 @@
             gap: 1.5rem;
         }
 
-        nav a {
+        a {
             text-decoration: none;
             color: black;
         }
+        
 
         main {
             max-width: 700px;
@@ -51,6 +52,17 @@
             margin-bottom: 2rem;
         }
 
+        .button {
+            padding: 0.75rem 2rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
         button {
             padding: 0.75rem 2rem;
             border: 1px solid #111;
@@ -58,6 +70,7 @@
             background: transparent;
             font-family: 'Georgia', serif;
             font-size: 1rem;
+            margin-right: 5px;
             cursor: pointer;
         }
 
@@ -84,10 +97,7 @@
         .box small {
             margin-left: auto;
         }
-        button {
-            cursor: pointer;
-            margin-right: 5px;
-        }
+
         .buttons {
             display: flex;
             margin-left: auto;
@@ -96,10 +106,10 @@
             display: none;
             align-items: center;
             justify-content: center;
-            position: fixed;    /* reste en place même si on scroll */
-            inset: 0;           /* couvre tout l'écran (top/right/bottom/left: 0) */
+            position: fixed;    
+            inset: 0;          
             background: rgba(195, 195, 195, 0.4);
-            z-index: 9999;      /* par dessus tout le reste */
+            z-index: 9999;
             border : 1px solid black;
         }
         #modal.active {
@@ -108,7 +118,7 @@
         #modal-box {
             background: white;
             padding: 2rem;
-            border: 1px solid black;  /* ← uniquement ici */
+            border: 1px solid black;
             border-radius: 8px;
             text-align: center;
             min-width: 300px;
@@ -131,7 +141,6 @@
     {% if posts %}
         <h2 class="vosposts">Vos posts</h2>
         {% for post in posts %}
-
             {% if post.content_type == 'TICKET' %}
                 <div class="box ticket">
                     <p>Vous avez publié un ticket</p>
@@ -139,11 +148,11 @@
                     <h3>{{ post.title }}</h3>
                     <p>{{ post.description }}</p>
                     {% if post.image %}
-                        <img src="{{ post.image.url }}">
+                        <img src="{{ post.image.url }}" alt="Image associé à l'oeuvre">
                     {% endif %}
-                    <div class="buttons"> 
-                        <a href="{% url 'edit_ticket' post.pk %}"><button type="button">Modifier</button></a>
-                        <button type="button" onclick="openModal('{{ post.pk }}', 'TICKET')">Supprimer</button>
+                    <div class="buttons">
+                        <a href="{% url 'edit_ticket' post.pk %}" class="button">Modifier</a>
+                        <button type="button" class="button" onclick="openModal('{{ post.pk }}', 'TICKET')">Supprimer</button>
                     </div>
                 </div>
             {% elif post.content_type == 'REVIEW' %}
@@ -161,16 +170,20 @@
                     </h3>
                     <p>{{ post.body }}</p>
                     <div class="box ticket">
-                        <p>Vous avez publié un ticket</p>
+                        {% if post.ticket.user == request.user %}
+                            <p>Vous avez publié un ticket</p>
+                        {% else %}
+                            <p>{{post.ticket.user.username}} a publié un ticket</p>
+                        {% endif %}
                         <small>{{post.ticket.time_created}}</small>
                         <h3>{{ post.ticket.title }}</h3>
                         <p>{{ post.ticket.description }}</p>
                         {% if post.ticket.image %}
-                            <img src="{{ post.ticket.image.url }}">
+                            <img src="{{ post.ticket.image.url }}" alt="Image associé à l'oeuvre">
                         {% endif %}
                     </div>
                     <div class="buttons"> 
-                        <a href="{% url 'edit_review' post.pk %}"><button type="button">Modifier</button></a>
+                        <a href="{% url 'edit_review' post.pk %}" class="button">Modifier</a>
                         <button type="button" onclick="openModal('{{ post.pk }}', 'REVIEW')">Supprimer</button>
                     </div>
                 </div>

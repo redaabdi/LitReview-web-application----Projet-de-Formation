@@ -77,6 +77,21 @@
             resize: vertical;
         }
 
+        .file-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #111;
+            border-radius: 8px;
+            background: transparent;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            width: fit-content;
+            margin-bottom: 2rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
 
         .actions {
             display: flex;
@@ -156,62 +171,39 @@
         {% csrf_token %}
 
         <div class="box-ticket">
-            <h3>Livre / Article :</h3>
-            <label for="title">Titre</label>
-            {{ ticket_form.title.errors }}
-            <input type="text" id="title" name="title">
-
-            <label for="description">Description *</label>
-            {{ ticket_form.description.errors }}
-            <textarea id="description" name="description"></textarea>
-
-            <div class="image-view">
-                <p>Image</p>
-                <div class="image-wrapper">
-                    <img id="image-view" src="" alt="">
-                    <p id="close-cross" style="display: none;" aria-label="Retirer l'image sélectionnée">×</p>
+            <p> Vous êtes en train de poster une réponse à</p>
+                <div class="box-ticket">
+                        {% if ticket.user == request.user %}
+                            <p>Vous avez publié un ticket</p>
+                        {% else %}
+                            <p>{{ticket.user.username}} a publié un ticket</p>
+                        {% endif %}
+                        <small>{{ticket.time_created}}</small>
+                        <h3>{{ ticket.title }}</h3>
+                        <p>{{ ticket.description }}</p>
+                        {% if ticket.image %}
+                            <img src="{{ ticket.image.url }}" alt="Image associé à l'oeuvre">
+                        {% endif %}
                 </div>
-
-                <input type="file" id="image" name="image">
-                {{ ticket_form.image.errors }}
-            </div>
-
-            <script>
-                document.getElementById('image').addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        document.getElementById('image-view').src = URL.createObjectURL(file);
-                        document.getElementById('image-view').alt = "Image associé à l'oeuvre";
-                        document.getElementById('close-cross').style.display = ''
-                    }
-                });
-
-                document.getElementById('close-cross').addEventListener('click', function() {
-                    document.getElementById('image').value = '';
-                    document.getElementById('image-view').src = '';
-                    document.getElementById('image-view').alt = '';
-                    document.getElementById('close-cross').style.display = 'none';
-                });
-            </script>
         </div>
         <div class="box-review">
             <h3>Critique :</h3>
-            <label for="headline">Titre</label>
+            <label>Titre</label>
             {{ review_form.headline.errors }}
             <input type="text" id="headline" name="headline">
 
-            <p>Note</p>
+            <label>Note</label>
             {{ review_form.rating.errors }}
             <div class="rating">
-                <label><input type="radio" name="rating" value="0"> 0</label>
-                <label><input type="radio" name="rating" value="1"> 1</label>
-                <label><input type="radio" name="rating" value="2"> 2</label>
-                <label><input type="radio" name="rating" value="3"> 3</label>
-                <label><input type="radio" name="rating" value="4"> 4</label>
-                <label><input type="radio" name="rating" value="5"> 5</label>
+                <input type="radio" name="rating" value="0"> 0
+                <input type="radio" name="rating" value="1"> 1
+                <input type="radio" name="rating" value="2"> 2
+                <input type="radio" name="rating" value="3"> 3
+                <input type="radio" name="rating" value="4"> 4
+                <input type="radio" name="rating" value="5"> 5
             </div>
 
-            <label for="body">Commentaire * </label>
+            <label>Commentaire * </label>
             {{ review_form.body.errors }}
             <textarea id="body" name="body"></textarea>
         </div>

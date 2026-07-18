@@ -132,12 +132,13 @@
 
     <form class="follow-form" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="action" value="search_follow">
-        <input type="text" name="username" placeholder="Nom d'utilisateur">
+        
+        <input type="text" arialabel="Nom d'utilisateur" name="username" placeholder="Nom d'utilisateur">
         {% if message %}
             <p>{{message}}</p>
         {% endif %}
-        <button type="submit">Suivre</button>
+        <button type="submit" name="action" value="follow">Suivre</button>
+        <button type="submit" name="action" value="block">Bloquer</button>
     </form>
 
     <section>
@@ -147,11 +148,10 @@
             {% for relation in relations_userfollows %}
                 <form method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="action" value="unfollow">
                     <div class="users_box">
                         <input type="hidden" name="relation_id" value={{relation.id}} >
                         <p>{{ relation.followed_user.username }}</p>
-                        <button type="submit">Se désabonner</button>
+                        <button type="submit" name="action" value="unfollow">Se désabonner</button>
                     </div>
                 </form>
             {% endfor %}
@@ -177,16 +177,21 @@
         <h2>Utilisateurs bloqués</h2>
         {% if relations_userblocks %}
             {% for relation in relations_userblocks %}
+            <form method="POST">
+                {% csrf_token %}
                 <div class="users_box">
-                    <p>{{ relation.user.username }}</p>
+                    <input type="hidden" name="relation_id" value={{relation.id}}>
+                    <p>{{ relation.blocked_user.username }}</p>
+                    <button type="submit" name="action" value="unblock">Débloquer</button>
                 </div>
+            </form>
             {% endfor %}
         {% else %}
             <p class="list-empty">Aucun utilisateur bloqué.</p>
         {% endif %}
     </section>
 
-    <p>Utilisateur connecté : {{ request.user }}</p>
+    <p>Profil : {{ request.user }}</p>
 </main>
 
 </body>
