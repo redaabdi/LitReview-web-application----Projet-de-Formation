@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, ReviewForm
 from itertools import chain
 from django.db.models import Value, CharField, Q
-
+from django.http import HttpResponseForbidden
 
 @login_required(login_url="homepage")
 def feed(request):
@@ -23,6 +23,8 @@ def feed(request):
 @login_required(login_url="homepage")
 def create_review_response(request, pk):
     ticket = Ticket.objects.get(pk=pk)
+    if Review.objects.filter(ticket=ticket, user=request.user).exists() :
+        return HttpResponseForbidden()
     if request.method == "POST":
         review_form = ReviewForm(request.POST)
         if review_form.is_valid():
@@ -41,9 +43,7 @@ def create_review_response(request, pk):
                 "create_review_response.html",
                 {"ticket": ticket, "review_form": review_form},
             )
-
     else:
-
         return render(request, "create_review_response.html", {"ticket": ticket})
 
 
@@ -68,6 +68,7 @@ def create_ticket(request):
 
 @login_required(login_url="homepage")
 def create_review(request):
+
     if request.method == "POST":
         ticket_form = TicketForm(request.POST, request.FILES)
         review_form = ReviewForm(request.POST)
