@@ -145,16 +145,10 @@ def edit_ticket(request, pk):
 def edit_review(request, pk):
     review = Review.objects.get(pk=pk, user=request.user)
     if request.method == "POST":
-        ticket_form = TicketForm(request.POST, request.FILES, instance=review.ticket)
         review_form = ReviewForm(request.POST, instance=review)
-        if ticket_form.is_valid() and review_form.is_valid():
-            ticket = ticket_form.save(commit=False)
-            ticket_user = request.POST.get("user")
-            ticket.user = User.objects.get(username=ticket_user)
-            ticket.save()
+        if review_form.is_valid():
             review = review_form.save(commit=False)
             review.user = request.user
-            review.ticket = ticket
             review.save()
             return render(
                 request,
@@ -169,7 +163,6 @@ def edit_review(request, pk):
                 request,
                 "edit_review.html",
                 {
-                    "ticket_form": ticket_form,
                     "review_form": review_form,
                     "review": review,
                 },
